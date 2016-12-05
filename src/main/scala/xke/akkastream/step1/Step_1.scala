@@ -48,8 +48,9 @@ class Step_1_1_Source extends Step_1 {
 
   // TODO: create a Source that will generate 'NumberEvent' with a random value
   // TODO: you can use 'scala.util.Random.nextInt()'
-  val source: Source[NumberEvent, _] = ???
-
+  val source: Source[NumberEvent, _] = Source.fromIterator(
+    () => Iterator.continually().map(_ => NumberEvent(Random.nextInt()))
+  )
   val sink: Sink[NumberEvent, _] = Sink.foreach(event => {
     Thread.sleep(50)
     println(event)
@@ -72,7 +73,7 @@ class Step_1_2_Map extends Step_1 {
 
   // TODO: write a map function so EndEvent's value will be the double of StartEvent's value
   lazy val stream = source
-    .map(???)
+    .map(start => EndEvent(start.value * 2))
     .runWith(sink)
 }
 
@@ -88,7 +89,7 @@ class Step_1_3_Filter extends Step_1 {
 
   // TODO: write a filter function so only CategorizedEvent with category equals 3 are logged by the Sink
   lazy val stream = source
-    .filter(???)
+    .filter(_.category == 3)
     .runWith(sink)
 }
 
@@ -96,10 +97,12 @@ class Step_1_4_MaterializedValue extends Step_1 {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   // TODO: create a Source that will generate exactly 10 'NumberEvent's with a random value
-  lazy val source: Source[NumberEvent, _] = ???
+  lazy val source: Source[NumberEvent, _] =
+    Source(Range(0, 10).map(_ => NumberEvent(Random.nextInt(100))))
 
   // TODO: create a Sink that will sum the 'NumberEvent's values on completion
-  lazy val sink: Sink[NumberEvent, Future[Int]] = ???
+  lazy val sink: Sink[NumberEvent, Future[Int]] =
+    Sink.fold(0)((agg: Int, event: NumberEvent) => agg + event.value)
 
   lazy val result: Future[Int] = source.runWith(sink)
   result.onComplete {

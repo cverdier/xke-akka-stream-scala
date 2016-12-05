@@ -20,15 +20,17 @@ class TextSinkActor(lowWaterMark: Int, highWaterMark: Int) extends ActorSubscrib
     // TODO : Element : call eventSuccess(...) with the element received from the Stream
     // NB : Request will be sent automatically at the and of this method by the RequestStrategy
     case OnNext(event: TextEvent) =>
-      ???
+      eventSuccess(event)
 
     // TODO : Failure (fatal error) received from the Stream : call onFailure(...) and stop the actor
     case OnError(error: Exception) =>
-      ???
+      onFailure(error)
+      context.stop(self)
 
     // TODO : Completion received from the Stream : call onComplete() and stop the actor
     case OnComplete =>
-      ???
+      onComplete()
+      context.stop(self)
   }
 
   // Provided method to be called for each received Order

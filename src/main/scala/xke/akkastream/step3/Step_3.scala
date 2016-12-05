@@ -63,7 +63,9 @@ class Step_3_0_UnhandledFailure extends Step_3 {
 class Step_3_1_Handle_Error extends Step_3 {
 
   // TODO: Write a function to return a Try to the stream
-  def safeLetterToNumberAsync(event: LetterEvent): Future[Try[NumberEvent]] = ???
+  def safeLetterToNumberAsync(event: LetterEvent): Future[Try[NumberEvent]] = Future {
+    Try(letterToNumber(event))
+  }
 
   lazy val sink: Sink[Try[NumberEvent], Future[Done]] = Sink.foreach({
     case Success(event) => println(s"Success : $event")
@@ -82,10 +84,14 @@ class Step_3_1_Handle_Error extends Step_3 {
 class Step_3_2_Chain_Handle_Error extends Step_3 {
 
   // TODO: Reuse previous implementation
-  def safeLetterToNumberAsync(event: LetterEvent): Future[Try[NumberEvent]] = ???
+  def safeLetterToNumberAsync(event: LetterEvent): Future[Try[NumberEvent]] = Future {
+    Try(letterToNumber(event))
+  }
 
   // TODO: Write a function to return a Try to the stream
-  def safeComputeFromNumberAsync(previous: Try[NumberEvent]): Future[Try[ComputedEvent]] = ???
+  def safeComputeFromNumberAsync(previous: Try[NumberEvent]): Future[Try[ComputedEvent]] = Future {
+    previous.flatMap(event => Try(computeFromNumber(event)))
+  }
 
   lazy val sink: Sink[Try[ComputedEvent], Future[Done]] = Sink.foreach({
     case Success(event) => println(s"Success : $event")
@@ -105,10 +111,14 @@ class Step_3_2_Chain_Handle_Error extends Step_3 {
 class Step_3_3_Materialized_Error_Failure extends Step_3 {
 
   // TODO: Reuse previous implementation
-  def safeLetterToNumberAsync(event: LetterEvent): Future[Try[NumberEvent]] = ???
+  def safeLetterToNumberAsync(event: LetterEvent): Future[Try[NumberEvent]] = Future {
+    Try(letterToNumber(event))
+  }
 
   // TODO: Reuse previous implementation
-  def safeComputeFromNumberAsync(previous: Try[NumberEvent]): Future[Try[ComputedEvent]] = ???
+  def safeComputeFromNumberAsync(previous: Try[NumberEvent]): Future[Try[ComputedEvent]] = Future {
+    previous.flatMap(event => Try(computeFromNumber(event)))
+  }
 
   lazy val textSource = Source("423567a5608a550a42".map(c => LetterEvent(c.toString)))
 
@@ -116,9 +126,9 @@ class Step_3_3_Materialized_Error_Failure extends Step_3 {
   lazy val stream = textSource
     .mapAsyncUnordered(4)(safeLetterToNumberAsync)
     .mapAsyncUnordered(4)(safeComputeFromNumberAsync)
-    .runWith(Sink.ignore)
   // TODO: Replace 'runWith(Sink.ignore)' by an implementation returning a result
   // TODO: The result will be a concatenated String where Error values are replace with "_"
+    .runFold("")((result, element) => result + element.map(_.value).toOption.getOrElse("_"))
 
   stream.onComplete {
     case Success(value) => println(s"Result: $value")

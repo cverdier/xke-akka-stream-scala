@@ -54,13 +54,14 @@ class Step_2_1_MapAsync extends Step_2 {
   }
 
   // TODO: Wrap slowConvert in a Future
-  def convertAsync(numberEvent: NumberEvent): Future[TextEvent] = ???
+  def convertAsync(numberEvent: NumberEvent): Future[TextEvent] =
+    Future(slowConvert(numberEvent))
 
-  val parallelism = 4
+  val parallelism = 8
 
   // TODO: Use parallesim with the mapAsync function
   lazy val stream = source
-    .map(slowConvert)
+    .mapAsync(parallelism)(convertAsync)
     .runWith(sink)
   // TODO: Not working ? Try to increase the parallelism
 }
@@ -75,12 +76,13 @@ class Step_2_2_MapAsync extends Step_2 {
   }
 
   // TODO: Reuse the implementation
-  def convertAsync(numberEvent: NumberEvent): Future[TextEvent] = ???
+  def convertAsync(numberEvent: NumberEvent): Future[TextEvent] =
+    Future(slowConvert(numberEvent))
 
   val parallelism = 8
 
   lazy val stream = source
-    .map(slowConvert)
+    .mapAsyncUnordered(parallelism)(convertAsync)
     .runWith(sink)
   // TODO: One operation blocks the flow... is there another mapAsync in the API ?
 }
@@ -93,7 +95,8 @@ class Step_2_3_Grouped extends Step_2 {
   }
 
   // TODO: Wrap slowBatchConvert in a Future
-  def batchConvertAsync(events: Seq[NumberEvent]): Future[Seq[TextEvent]] = ???
+  def batchConvertAsync(events: Seq[NumberEvent]): Future[Seq[TextEvent]] =
+    Future(slowBatchConvert(events))
 
   // We will use a sink that accepts batched events
   lazy val batchSink: Sink[Seq[TextEvent], _] = Sink.foreach(events => {
@@ -105,9 +108,10 @@ class Step_2_3_Grouped extends Step_2 {
 
   // TODO: Implement a stream which uses the bacthConvertAsync function
   // TODO: find the correct functions in the Akka Stream API
-  lazy val stream = //source.
-    ???
-//    .runWith(batchSink)
+  lazy val stream = source
+    .grouped(batchSize)
+    .mapAsync(parallelism)(batchConvertAsync)
+    .runWith(batchSink)
 
   // TODO: Hard ? Maybe there is an easier function in the Akka Stream API
 }
@@ -128,11 +132,11 @@ class Step_2_4_Grouped_Ungrouped extends Step_2 {
 
   // TODO: We want to use the previous sink (for TextEvent, not Seq[TextEvent])
   // TODO: Is there an 'unbatch' function in Akka Stream API ?
-  lazy val stream = // source.
-    // start like Step_2_3
-    // unbatch here :
-    ???
-    //.runWith(sink)
+  lazy val stream = source
+    .grouped(batchSize)
+    .mapAsync(parallelism)(batchConvertAsync)
+    .mapConcat(identity)
+    .runWith(sink)
 }
 
 

@@ -1,7 +1,7 @@
 package xke.akkastream.step5
 
 import akka.actor.ActorSystem
-import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, RunnableGraph, Sink, Source}
+import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, Merge, RunnableGraph, Sink, Source}
 import akka.stream.{ActorMaterializer, ClosedShape}
 import xke.akkastream.step5.Step_5.NumberEvent
 
@@ -84,12 +84,18 @@ class Step_5_1_Merge_Broadcast extends Step_5 {
   lazy val double = Flow[NumberEvent].map(event => NumberEvent(event.value * 2))
 
   lazy val graph = RunnableGraph.fromGraph(GraphDSL.create() { implicit b =>
+    import GraphDSL.Implicits._
 
     // TODO: merge all the Sources
     // TODO: double the NumberEvent's values via 'double'
     // TODO: broadcast to the two Sinks
 
-    ???
+    val merge = b.add(Merge[NumberEvent](3))
+    val broadcast = b.add(Broadcast[NumberEvent](2))
+
+    smallNumberSource  ~> merge ~> double ~> broadcast ~> firstSink
+    mediumNumberSource ~> merge ;            broadcast ~> secondSink
+    largeNumberSource  ~> merge
 
     ClosedShape
   })

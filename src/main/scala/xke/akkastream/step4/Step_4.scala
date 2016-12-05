@@ -22,17 +22,19 @@ class Step_4 {
 
   // TODO: First, implement the NumberSourceActor
   // TODO: Create a Source from the NumberSourceActor
-  lazy val source: Source[NumberEvent, _] = ???
+  lazy val source: Source[NumberEvent, _] = Source.actorPublisher(NumberSourceActor.props)
 
   // TODO: First, implement the TextSinkActor
   // TODO: Create a Sink from the TextSinkActor
-  lazy val sink: Sink[TextEvent, _] = ???
+  lazy val sink: Sink[TextEvent, _] = Sink.actorSubscriber(TextSinkActor.props(2, 4))
 
   // TODO: First, implement the custom stage in NumberToText
   // TODO: Create the stage from NumberToText
-  lazy val numberToText = ???
+  lazy val numberToText = Flow[NumberEvent].via(new NumberToText)
 
   // TODO: Finally, wire all the elements and run the stream
-  val stream = ???
+  val stream = source
+    .via(numberToText)
+    .runWith(sink)
 }
 

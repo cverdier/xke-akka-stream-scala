@@ -22,12 +22,12 @@ class NumberSourceActor extends ActorPublisher[NumberEvent] with ActorLogging {
     // TODO: You must send as mush as requested
     case Request(count) =>
       log.info(s"Received Request ($count)")
-      ???
+      Range(0, count.toInt).foreach(_ => onNext(generateNextEvent()))
 
     // TODO: The Stream sent down a cancel message : stop the actor
     case Cancel =>
       log.info("Cancel Message Received")
-      ???
+      context.stop(self)
   }
 
   // Provided method to generate an Event

@@ -26,8 +26,7 @@ class NumberToText() extends GraphStage[FlowShape[NumberEvent, TextEvent]] {
       // TODO: use numberToText to make the actual mapping
       setHandler(in, new InHandler {
         override def onPush(): Unit = {
-          ???
-//          push(out, numberToText(grab(in)))
+          push(out, numberToText(grab(in)))
         }
       })
 
@@ -35,8 +34,7 @@ class NumberToText() extends GraphStage[FlowShape[NumberEvent, TextEvent]] {
       // TODO: use pull(...) to require demand from the Inlet
       setHandler(out, new OutHandler {
         override def onPull(): Unit = {
-          ???
-//          pull(in)
+          pull(in)
         }
       })
     }
