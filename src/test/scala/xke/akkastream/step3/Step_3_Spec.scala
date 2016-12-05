@@ -1,9 +1,9 @@
-package xke.akkastream
+package xke.akkastream.step3
 
 import akka.Done
 import akka.stream.scaladsl.Source
 import org.scalatest.{Matchers, WordSpec}
-import xke.akkastream.Step_3.LetterEvent
+import xke.akkastream.step3.Step_3.LetterEvent
 
 import scala.concurrent.Await
 import scala.concurrent.duration._

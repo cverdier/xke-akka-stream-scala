@@ -1,10 +1,10 @@
-package xke.akkastream
+package xke.akkastream.step3
 
 import akka.Done
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Sink, Source}
-import xke.akkastream.Step_3.{ComputedEvent, LetterEvent, NumberEvent}
+import xke.akkastream.step3.Step_3.{ComputedEvent, LetterEvent, NumberEvent}
 
 import scala.concurrent.Future
 import scala.util.{Failure, Random, Success, Try}
@@ -65,7 +65,6 @@ class Step_3_1_Handle_Error extends Step_3 {
   // TODO: Write a function to return a Try to the stream
   def safeLetterToNumberAsync(event: LetterEvent): Future[Try[NumberEvent]] = ???
 
-
   lazy val sink: Sink[Try[NumberEvent], Future[Done]] = Sink.foreach({
     case Success(event) => println(s"Success : $event")
     case Failure(error) => println(s"Error : $error")
@@ -85,10 +84,8 @@ class Step_3_2_Chain_Handle_Error extends Step_3 {
   // TODO: Reuse previous implementation
   def safeLetterToNumberAsync(event: LetterEvent): Future[Try[NumberEvent]] = ???
 
-
   // TODO: Write a function to return a Try to the stream
   def safeComputeFromNumberAsync(previous: Try[NumberEvent]): Future[Try[ComputedEvent]] = ???
-
 
   lazy val sink: Sink[Try[ComputedEvent], Future[Done]] = Sink.foreach({
     case Success(event) => println(s"Success : $event")
@@ -110,10 +107,8 @@ class Step_3_3_Materialized_Error_Failure extends Step_3 {
   // TODO: Reuse previous implementation
   def safeLetterToNumberAsync(event: LetterEvent): Future[Try[NumberEvent]] = ???
 
-
   // TODO: Reuse previous implementation
   def safeComputeFromNumberAsync(previous: Try[NumberEvent]): Future[Try[ComputedEvent]] = ???
-
 
   lazy val textSource = Source("423567a5608a550a42".map(c => LetterEvent(c.toString)))
 

@@ -1,13 +1,13 @@
-package xke.akkastream
+package xke.akkastream.step2
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Sink, Source}
-import xke.akkastream.Step_2.{NumberEvent, TextEvent}
+import xke.akkastream.step2.Step_2.{NumberEvent, TextEvent}
 
 import scala.concurrent.Future
-import scala.util.Random
 import scala.concurrent.duration._
+import scala.util.Random
 
 object Step_2_Run extends App {
   new Step_2_2_MapAsync

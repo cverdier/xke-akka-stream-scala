@@ -1,11 +1,11 @@
-package xke.akkastream
+package xke.akkastream.step1
 
 import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Sink, Source}
-import xke.akkastream.Step_1.{CategorizedEvent, EndEvent, NumberEvent, StartEvent}
+import xke.akkastream.step1.Step_1.{CategorizedEvent, EndEvent, NumberEvent, StartEvent}
 
 import scala.concurrent.Future
 import scala.util.{Failure, Random, Success}

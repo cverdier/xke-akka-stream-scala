@@ -1,4 +1,4 @@
-package xke.akkastream
+package xke.akkastream.step2
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
@@ -6,7 +6,7 @@ import akka.stream.scaladsl.{Sink, Source}
 import akka.stream.testkit.TestSubscriber.Probe
 import akka.stream.testkit.scaladsl.TestSink
 import org.scalatest.{Matchers, WordSpec}
-import xke.akkastream.Step_2.{NumberEvent, TextEvent}
+import xke.akkastream.step2.Step_2.{NumberEvent, TextEvent}
 
 import scala.concurrent.duration._
 

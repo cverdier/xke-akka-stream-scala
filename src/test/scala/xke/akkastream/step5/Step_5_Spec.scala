@@ -1,11 +1,11 @@
-package xke.akkastream
+package xke.akkastream.step5
 
 import akka.Done
 import akka.actor.ActorSystem
 import akka.stream.scaladsl.{Sink, Source}
 import akka.testkit.TestProbe
 import org.scalatest.WordSpec
-import xke.akkastream.Step_5.NumberEvent
+import xke.akkastream.step5.Step_5.NumberEvent
 
 class Step_5_Spec extends WordSpec {
 
